@@ -24,6 +24,15 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.yellow,
         ),
+        /* localizationsDelegates: [
+          const TranslationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''),
+          const Locale('ar', ''),
+        ],*/
         home: FutureBuilder(
             future: Preference.getID(),
             builder: (context, snapshots) {
@@ -43,3 +52,5 @@ class MyApp extends StatelessWidget {
         });
   }
 }
+
+String translate = 'en';

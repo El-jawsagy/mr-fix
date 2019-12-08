@@ -8,12 +8,9 @@ import 'package:mr_fix/RegistrationForm/User.dart';
 import 'package:mr_fix/UI/SimilarWidgets.dart';
 
 class PagesNetwork {
-  Future<List<dynamic>> serviceCategories() async {
+  Future<List<dynamic>> serviceCategories(String url) async {
     try {
-      return http
-          .get(
-              'http://mr-fix.org/en/api/servicescatogries?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv')
-          .then((http.Response response) async {
+      return http.get(url).then((http.Response response) async {
         final String responseBody = response.body;
         List<dynamic> ordersItem;
         ordersItem = json.decode(responseBody);

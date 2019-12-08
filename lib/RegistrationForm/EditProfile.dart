@@ -110,7 +110,8 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Edit Your Profile"),
+          title: Text(
+              "Edit Your Profile" /*AppLocalizations.of(context).translate("Edit Your Profile")*/),
           centerTitle: true,
         ),
         body: FutureBuilder(

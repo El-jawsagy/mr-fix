@@ -6,6 +6,7 @@ import 'Network_utils/Pages_Network.dart';
 import 'RegistrationForm/LoginPage.dart';
 import 'ServicePage.dart';
 import 'UI/SimilarWidgets.dart';
+import 'main.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -20,9 +21,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Categories"),
+          title:
+              Text("Categories" /*AppLocalizations.of(context).translate()*/),
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.translate),
+                onPressed: () {
+                  setState(() {
+                    if (translate == 'en') {
+                      translate = 'ar';
+                    } else if (translate == 'ar') {
+                      translate = 'en';
+                    }
+                  });
+                }),
             IconButton(
                 icon: Icon(Icons.update),
                 onPressed: () {
@@ -43,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         // drawer: buildDrawer(),
         body: FutureBuilder(
-            future: pagesNetwork.serviceCategories(),
+            future: pagesNetwork.serviceCategories('http://mr-fix.org/' +
+                translate +
+                '/api/servicescatogries?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv'),
             builder: (context, snapshots) {
               if (snapshots.connectionState == ConnectionState.waiting)
                 return LoadingScreen();

@@ -8,7 +8,7 @@ import 'UI/SimilarWidgets.dart';
 class MakeOrder extends StatefulWidget {
   String title, description, image;
   int serviceId;
-  MakeOrder(this.serviceId, this.title, this.description, this.image);
+  MakeOrder({this.serviceId, this.title, this.description, this.image});
   @override
   _MakeOrderState createState() => _MakeOrderState();
 }
@@ -19,6 +19,7 @@ class _MakeOrderState extends State<MakeOrder> {
   PagesNetwork pagesNetwork = new PagesNetwork();
   SimilarWidgets similarWidgets = new SimilarWidgets();
 
+  String translate = 'en';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +44,8 @@ class _MakeOrderState extends State<MakeOrder> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height / 80),
                 Text(
-                  'Description : ',
+                  "Description"
+                  /*AppLocalizations.of(context).translate("Description")*/,
                   style: TextStyle(
                       //fontFamily: 'Montserrat',
                       fontSize: 25.0,
@@ -117,7 +119,9 @@ class _MakeOrderState extends State<MakeOrder> {
       int id = prefs.get("idPref");
       String loct = prefs.get("locationPref");
       Map<String, dynamic> list = await pagesNetwork.certainService(
-          'http://mr-fix.org/en/api/services/' +
+          'http://mr-fix.org/' +
+              translate +
+              '/api/services/' +
               '${widget.serviceId}' +
               '?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv');
 

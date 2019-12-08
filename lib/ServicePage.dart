@@ -4,6 +4,8 @@ import 'MakeOrder.dart';
 import 'Network_utils/Pages_Network.dart';
 import 'UI/SimilarWidgets.dart';
 import 'UI/loading_screen.dart';
+import 'app_localizations.dart';
+import 'main.dart';
 
 class ServicePage extends StatefulWidget {
   int slug;
@@ -20,14 +22,15 @@ class _ServicePageState extends State<ServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Services"),
+          title: Text("Services"/*AppLocalizations.of(context).translate("Services")*/),
           centerTitle: true,
         ),
         body: FutureBuilder(
-            future: pagesNetwork.service(
-                'http://mr-fix.org/en/api/servicescatogries/' +
-                    '${widget.slug}' +
-                    '?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv'),
+            future: pagesNetwork.service('http://mr-fix.org/' +
+                translate +
+                '/api/servicescatogries/' +
+                '${widget.slug}' +
+                '?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv'),
             builder: (context, snapshots) {
               if (snapshots.connectionState == ConnectionState.waiting)
                 return LoadingScreen();
@@ -50,8 +53,11 @@ class _ServicePageState extends State<ServicePage> {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                return MakeOrder(snap[i]['product_id'], snap[i]['title'],
-                    snap[i]['content'], snap[i]['image']);
+                return MakeOrder(
+                    serviceId: snap[i]['product_id'],
+                    title: snap[i]['title'],
+                    description: snap[i]['content'],
+                    image: snap[i]['image']);
               }));
             },
             child: ListTile(
