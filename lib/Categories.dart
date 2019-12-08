@@ -21,13 +21,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:
-              Text("Categories" /*AppLocalizations.of(context).translate()*/),
+          title: Text(translate == 'en' ? "Categories" : 'الاقسام'),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.translate),
-                onPressed: () {
+            InkWell(
+                onTap: () {
                   setState(() {
                     if (translate == 'en') {
                       translate = 'ar';
@@ -35,7 +33,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       translate = 'en';
                     }
                   });
-                }),
+                },
+                child: Center(
+                    child: Text(
+                  translate == 'ar' ? 'EN' : 'AR',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
+                ))),
             IconButton(
                 icon: Icon(Icons.update),
                 onPressed: () {
@@ -98,7 +101,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('img/logo.png'), fit: BoxFit.contain),
+                      image: snap[i]['image'] == null || snap[i]['image'] == ""
+                          ? AssetImage('img/logo.png')
+                          : NetworkImage(
+                              "http://mr-fix.org" + snap[i]['image'],
+                            ),
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -119,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  /* Widget buildDrawer() {
+/* Widget buildDrawer() {
     return new Drawer(
       child: new ListView(
         children: <Widget>[
