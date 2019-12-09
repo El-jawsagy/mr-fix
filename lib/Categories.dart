@@ -76,7 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildBody(List<dynamic> snap) {
     return GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, childAspectRatio: 0.7),
+          crossAxisCount: 2,
+        ),
         itemCount: snap.length,
         itemBuilder: (context, i) {
           return InkWell(
@@ -90,41 +91,40 @@ class _MyHomePageState extends State<MyHomePage> {
               print(snap[i]['slug']);
             },
             child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                elevation: 2,
-                child: Container(
-                  child: Container(
-                    color: Color.fromRGBO(0, 0, 0, 0.2),
-                    child: buildTitle(snap[i]['title']),
-                  ),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: snap[i]['image'] == null || snap[i]['image'] == ""
-                          ? AssetImage('img/logo.png')
-                          : NetworkImage(
-                              "http://mr-fix.org" + snap[i]['image'],
-                            ),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Card(
+                    elevation: 5,
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 3,
+                          child:
+                              snap[i]['image'] == null || snap[i]['image'] == ""
+                                  ? Image.asset(
+                                      'img/logo.png',
+                                    )
+                                  : Image.network(
+                                      "http://mr-fix.org" + snap[i]['image'],
+                                    ),
+                        ),
+                        Expanded(flex: 2, child: buildTitle(snap[i]['title']))
+                      ],
+                    ))),
           );
         });
   }
 
+/*snap[i]['image'] == null || snap[i]['image'] == ""
+                      ? Image.asset('img/logo.png')
+                      : Image.network(
+                          "http://mr-fix.org" + snap[i]['image'],
+                        )),*/
   Widget buildTitle(String title) {
-    return Container(
-      child: Text(
-        title,
-        style: TextStyle(
-            color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
-      ),
-      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-      //margin: EdgeInsets.only(left: 10, right: 10),
+    return Text(
+      title,
+      style: TextStyle(
+          color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
     );
   }
 
