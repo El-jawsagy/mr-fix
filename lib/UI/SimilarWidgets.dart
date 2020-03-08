@@ -69,7 +69,7 @@ class SimilarWidgets {
             new FlatButton(
               child: new Text("Ok"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
             ),
           ],
@@ -134,6 +134,41 @@ class SimilarWidgets {
               getLocation();
             },
           ),
+          hintStyle: TextStyle(fontSize: 18),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        ),
+        textInputAction: TextInputAction.next,
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Your Location shouldn't be empty";
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget extraLocationField(
+      TextEditingController locationController, BuildContext context) {
+    //locationController.text = placeMark.toString();
+
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.height / 30,
+          MediaQuery.of(context).size.height / 50,
+          MediaQuery.of(context).size.height / 30,
+          0),
+      child: TextFormField(
+        controller: locationController,
+        obscureText: false,
+        keyboardType: TextInputType.text,
+        style: TextStyle(fontSize: 15.0),
+        decoration: InputDecoration(
+          labelText: "Extra Location",
+          hintText: "Extra Location",
+
           hintStyle: TextStyle(fontSize: 18),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
 

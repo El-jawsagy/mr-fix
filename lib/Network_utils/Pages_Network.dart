@@ -65,15 +65,15 @@ class PagesNetwork {
 
   // ignore: missing_return
   Future<User> userLogin(BuildContext con, String url, {Map body}) async {
-    print(body);
     SimilarWidgets similarWidgets = new SimilarWidgets();
-
-    similarWidgets.showWaiting(con);
 
     try {
       return http.post(url, body: body).then((http.Response response) {
         final String responseBody = response.body;
-
+        if (response.body == "false" || response.body == "password wrong") {
+          return null;
+        }
+        print(responseBody);
         Map<String, dynamic> getObject = json.decode(responseBody);
 
         print(getObject);
@@ -84,6 +84,7 @@ class PagesNetwork {
         if (userGet.email != null) {
           return userGet;
         } else {
+          Navigator.of(con).pop(null);
           return null;
         }
       });
@@ -173,16 +174,11 @@ class PagesNetwork {
 //---------------------------will be handled--------*/
 
   Future<User> updateUser(String url, {Map body}) async {
-    print(body);
-
     try {
       return http.post(url, body: body).then((http.Response response) {
         final String responseBody = response.body;
-
+        print(responseBody);
         Map<String, dynamic> getObject = json.decode(responseBody);
-
-        print(getObject);
-        //_showDialog(jsondecode.toString());
 
         User userGet = User.fromJson(json.decode(responseBody));
 
@@ -208,6 +204,47 @@ class PagesNetwork {
       });
     } catch (ex) {
       // _showDialog("Something happened errored");
+    }
+  }
+
+  Future<dynamic> IsOrdered(String url) async {
+    print(url);
+    try {
+      return http.get(url).then((http.Response response) async {
+        // print();
+        var responseBody = jsonDecode(response.body);
+        var answer = responseBody["data"];
+        print(answer);
+        return answer;
+      });
+    } catch (ex) {
+      //_showDialog("Something happened errored");
+    }
+    // _showDialog("Something happened errored");
+    return null;
+  }
+
+  Future<String> MakeReview(
+      String url, int userId, int serviceID, double stars) async {
+    print(url);
+    print(userId);
+    print(serviceID);
+    print(stars);
+    Map<String, dynamic> body = {
+      'user_id': userId.toString(),
+      'service_id': serviceID.toString(),
+      'stars': stars.toString(),
+    };
+
+    try {
+      return http.post(url, body: body).then((http.Response response) {
+        var responseBody = jsonDecode(response.body);
+        print(responseBody["data"]);
+        final String answer = responseBody["data"];
+        return answer;
+      });
+    } catch (ex) {
+      //showDialog("Something happened errored");
     }
   }
 

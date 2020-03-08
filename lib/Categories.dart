@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:mr_fix/UI/loading_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(translate == 'en' ? "Categories" : 'الاقسام'),
-          centerTitle: true,
+          centerTitle: false,
           actions: <Widget>[
             InkWell(
                 onTap: () {
@@ -36,11 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Center(
                     child: Text(
-                  translate == 'ar' ? 'EN' : 'AR',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
-                ))),
+                      translate == 'ar' ? 'EN' : 'AR',
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
+                    ))),
             IconButton(
-                icon: Icon(Icons.update),
+                icon: Icon(Icons.mode_edit),
                 onPressed: () {
                   Navigator.pushNamed(context, '/EditProfile');
                 }),
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icon(Icons.exit_to_app),
                 onPressed: () async {
                   SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                  await SharedPreferences.getInstance();
                   prefs.clear();
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -63,12 +64,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 translate +
                 '/api/servicescatogries?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv'),
             builder: (context, snapshots) {
-              if (snapshots.connectionState == ConnectionState.waiting)
+              switch(snapshots.connectionState ){
+
+                case ConnectionState.none:
+                case ConnectionState.waiting:
                 return LoadingScreen();
-              if (snapshots.hasData && snapshots.data.length > 0) {
-                return buildBody(snapshots.data);
-              } else {
-                return similarWidgets.emptyPage(context);
+                  break;
+                case ConnectionState.active:
+                case ConnectionState.done:
+                 if(snapshots.hasData){
+                   return buildBody(snapshots.data);
+                 }else
+                   return similarWidgets.emptyPage(context);
+                  break;
+                default:
+                  return similarWidgets.emptyPage(context);
+
               }
             }));
   }
@@ -86,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   new MaterialPageRoute(
                       builder: (context) =>
-                          new ServicePage(snap[i]['id'], snap[i]['image'])));
+                      new ServicePage(snap[i]['id'], snap[i]['image'])));
 
               print(snap[i]['slug']);
             },
@@ -100,102 +111,27 @@ class _MyHomePageState extends State<MyHomePage> {
                         Expanded(
                           flex: 3,
                           child:
-                              snap[i]['image'] == null || snap[i]['image'] == ""
-                                  ? Image.asset(
-                                      'img/logo.png',
-                                    )
-                                  : Image.network(
-                                      "http://mr-fix.org" + snap[i]['image'],
-                                    ),
+                          snap[i]['image'] == null || snap[i]['image'] == ""
+                              ? Image.asset(
+                            'img/logo.png',
+                          )
+                              : Image.network(
+                            "http://mr-fix.org" + snap[i]['image'],
+                          ),
                         ),
-                        Expanded(flex: 2, child: buildTitle(snap[i]['title']))
+                        Expanded(flex: 1, child: buildTitle(snap[i]['title']))
                       ],
                     ))),
           );
         });
   }
 
-/*snap[i]['image'] == null || snap[i]['image'] == ""
-                      ? Image.asset('img/logo.png')
-                      : Image.network(
-                          "http://mr-fix.org" + snap[i]['image'],
-                        )),*/
   Widget buildTitle(String title) {
     return Text(
       title,
-      style: TextStyle(
-          color: Colors.black, fontWeight: FontWeight.w600, fontSize: 20),
+      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
     );
   }
 
-/* Widget buildDrawer() {
-    return new Drawer(
-      child: new ListView(
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountName: Text("Mark"),
-            accountEmail: Text("mark.george960@yahoo.com"),
-            currentAccountPicture: GestureDetector(
-              child: new CircleAvatar(
-                backgroundColor: Colors.grey,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            decoration: new BoxDecoration(color: Colors.green),
-          ),
 
-          //body of the drawer
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/Categories');
-            },
-            child: ListTile(
-              title: Text("Home Page"),
-              leading: Icon(Icons.home, color: Colors.green),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/MyAccount');
-            },
-            child: ListTile(
-              title: Text("My Account"),
-              leading: Icon(
-                Icons.person,
-                color: Colors.green,
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: ListTile(
-              title: Text("My orders"),
-              leading: Icon(Icons.shopping_basket, color: Colors.green),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/ShoppingPage');
-            },
-            child: ListTile(
-              title: Text("Shopping Cart"),
-              leading: Icon(Icons.shopping_cart, color: Colors.green),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/FavouritePage');
-            },
-            child: ListTile(
-              title: Text("Favourite"),
-              leading: Icon(Icons.favorite, color: Colors.green),
-            ),
-          ),
-        ],
-      ),
-    );
-  }*/
 }

@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   PagesNetwork pagesNetwork = new PagesNetwork();
   bool passwordVisibility = false;
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -86,11 +87,7 @@ class _LoginPageState extends State<LoginPage> {
           bottom: MediaQuery.of(context).size.height / 60),
       child: FlatButton(
         onPressed: () {
-          // TODO: implement validate function
-//          validate();
-
           validateForm();
-          // Navigator.pushNamed(context, '/MyHomePage');
         },
         child: Text(
           "Sign In",
@@ -164,26 +161,26 @@ class _LoginPageState extends State<LoginPage> {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-                title: new Text('You Really Forgot Your Password?!!!'),
-                content: new Text('Are you really that dumb?'),
-                actions: <Widget>[
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: new Text('Yes'),
-                  ),
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: new Text('No'),
-                  ),
-                ],
+            title: new Text('You Really Forgot Your Password?!!!'),
+            content: new Text('Are you really that dumb?'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
               ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+            ],
+          ),
         ) ??
         false;
   }
 
   Future<void> validateForm() async {
-    FormState formState = _formKey.currentState;
-    if (formState.validate()) {
+    if (_formKey.currentState.validate()) {
+      similarWidgets.showWaiting(context);
       User newUser = User(
           token: "hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv",
           email: emailController.text,
@@ -192,26 +189,26 @@ class _LoginPageState extends State<LoginPage> {
       User user = await pagesNetwork.userLogin(
           context, 'http://mr-fix.org/en/api/login',
           body: newUser.toLogin());
-
+      print(user);
       if (user != null) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => MyHomePage()),
             ModalRoute.withName('/LoginPage'));
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setInt("idPref", /*3*/ user.userID);
+        await prefs.setInt("idPref", user.userID);
         await prefs.setString("namePref", user.name);
         await prefs.setString("emailPref", user.email);
         await prefs.setString("phonePref", user.phoneNumber);
         await prefs.setString("passwordPref", passwordController.text);
         await prefs.setString("tokenPref", user.token);
         await prefs.setString("locationPref", user.location);
+        _formKey.currentState.reset();
       } else {
+        Navigator.pop(context);
         similarWidgets.showDialogWidget(
-            "make_sure_of_email_or_password", context);
+            "make sure of email or password", context);
       }
-
-      formState.reset();
     }
   }
 }

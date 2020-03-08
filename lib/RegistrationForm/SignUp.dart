@@ -21,6 +21,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
   TextEditingController locationController = new TextEditingController();
+  TextEditingController extraLocationController = new TextEditingController();
 
   SimilarWidgets similarWidgets = new SimilarWidgets();
   PagesNetwork pagesNetwork = new PagesNetwork();
@@ -69,7 +70,13 @@ class _SignUpState extends State<SignUp> {
     if (placemarks != null && placemarks.isNotEmpty) {
       final Placemark pos = placemarks[0];
       setState(() {
-        _placemark = pos.thoroughfare + ', ' + pos.locality;
+        _placemark = pos.thoroughfare +
+            ', ' +
+            pos.subThoroughfare +
+            ', ' +
+            pos.locality +
+            ', ' +
+            pos.subLocality;
       });
     }
 
@@ -110,9 +117,10 @@ class _SignUpState extends State<SignUp> {
                 similarWidgets.locationField(
                     locationController, _onLookupAddressPressed, context),
 
+                similarWidgets.extraLocationField(
+                    extraLocationController, context),
+
                 Container(
-                  margin: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height / 60),
                   padding: EdgeInsets.only(left: 8.0),
                   child: Text(
                     errorLocation,
@@ -173,7 +181,7 @@ class _SignUpState extends State<SignUp> {
                       MediaQuery.of(context).size.height / 30,
                       0,
                       MediaQuery.of(context).size.height / 30,
-                      MediaQuery.of(context).size.height / 50),
+                      MediaQuery.of(context).size.height / 60),
                 ),
 
                 Container(
@@ -216,7 +224,8 @@ class _SignUpState extends State<SignUp> {
           email: emailController.text,
           password: passwordController.text,
           phoneNumber: phoneController.text,
-          location: locationController.text);
+          location: locationController.text,
+          address: extraLocationController.text);
 
       User user = await pagesNetwork.createAndForgetUser(
           context, 'http://mr-fix.org/en/api/register',
@@ -234,6 +243,7 @@ class _SignUpState extends State<SignUp> {
         await prefs.setString("phonePref", user.phoneNumber);
         await prefs.setString("tokenPref", user.token);
         await prefs.setString("locationPref", user.location);
+        await prefs.setString("addressPref", user.address);
       }
       formState.reset();
     }

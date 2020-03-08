@@ -23,7 +23,7 @@ class _EditProfileState extends State<EditProfile> {
 
   PagesNetwork pagesNetwork = new PagesNetwork();
 
-  final _formKey = GlobalKey<FormState>();
+  final _EditKey = GlobalKey<FormState>();
   int id;
   String pass;
 
@@ -33,22 +33,23 @@ class _EditProfileState extends State<EditProfile> {
     nameController.text = prefs.get("namePref");
     emailController.text = prefs.get("emailPref");
     phoneController.text = prefs.get("phonePref");
+    setState(() {
+      if (check) {
+        if (_placemark == ", ") {
+          errorLocation =
+              "Google can't recognize your location, Please Write it Manually";
+        } else {
+          locationController.text = "";
 
-    if (check) {
-      if (_placemark == ", ") {
-        errorLocation =
-            "Google can't recognize your location, Please Write it Manually";
+          locationController.text = _placemark.toString();
+        }
       } else {
-        locationController.text = "";
-
-        locationController.text = _placemark.toString();
+        locationController.text = prefs.get("locationPref");
       }
-    } else {
-      locationController.text = prefs.get("locationPref");
-    }
 
-    id = prefs.get("idPref");
-    pass = prefs.get("passwordPref");
+      id = prefs.get("idPref");
+      pass = prefs.get("passwordPref");
+    });
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -122,12 +123,20 @@ class _EditProfileState extends State<EditProfile> {
                       top: MediaQuery.of(context).size.height / 30),
                   child: SingleChildScrollView(
                       child: Form(
-                    key: _formKey,
+                    key: _EditKey,
                     child: Column(children: <Widget>[
                       similarWidgets.buildLogo(size),
-                      similarWidgets.nameField(nameController, context),
-                      similarWidgets.emailField(emailController, context),
-                      similarWidgets.phoneField(phoneController),
+                      similarWidgets.nameField(
+                        nameController,
+                        context,
+                      ),
+                      similarWidgets.emailField(
+                        emailController,
+                        context,
+                      ),
+                      similarWidgets.phoneField(
+                        phoneController,
+                      ),
                       similarWidgets.locationField(
                           locationController, _onLookupAddressPressed, context),
                       Container(
@@ -140,7 +149,6 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       Container(
-//      padding: EdgeInsets.only(left: 20, right: 15),
                         child: TextFormField(
                           obscureText: true,
                           controller: passwordController,
@@ -149,8 +157,8 @@ class _EditProfileState extends State<EditProfile> {
                             hintText: "Password",
                             hintStyle: TextStyle(fontSize: 18),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            //suffixIcon: buildEye(visible),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -171,8 +179,6 @@ class _EditProfileState extends State<EditProfile> {
                       Container(
                         child: FlatButton(
                           onPressed: () {
-                            // TODO: implement validate function
-                            // validateForm();
                             validateForm();
                           },
                           child: Text(
@@ -192,9 +198,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> validateForm() async {
-    FormState formState = _formKey.currentState;
-
-    if (formState.validate()) {
+    if (_EditKey.currentState.validate()) {
       User newUser = User(
           token: "hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv",
           userIDStr: "$id",
@@ -202,15 +206,12 @@ class _EditProfileState extends State<EditProfile> {
           email: emailController.text,
           phoneNumber: phoneController.text,
           location: locationController.text,
-          password: passwordController.text == "" || null
-              ? pass
-              : passwordController.text);
+          password:
+              passwordController.text == "" ? pass : passwordController.text);
 
       User user = await pagesNetwork.updateUser(
           'http://mr-fix.org/en/api/updateprofile',
           body: newUser.toUpdate());
-
-      print(user.email);
 
       if (user != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -223,11 +224,10 @@ class _EditProfileState extends State<EditProfile> {
         print("hii: ${prefs.get("idPref")}");
         similarWidgets.showDialogWidget(
             "Your Data is updated successfully ", context);
+        Navigator.pop(context);
       } else {
         //  _showDialog("make_sure_of_email_or_password");
       }
-
-      formState.reset();
     }
   }
 }

@@ -1,6 +1,13 @@
 class User {
   int userID;
-  String token, name, email, phoneNumber, location, password, userIDStr;
+  String token,
+      name,
+      email,
+      phoneNumber,
+      location,
+      password,
+      userIDStr,
+      address;
 
   User(
       {this.token,
@@ -10,7 +17,8 @@ class User {
       this.phoneNumber,
       this.location,
       this.password,
-      this.userIDStr});
+      this.userIDStr,
+      this.address});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -35,8 +43,9 @@ class User {
     map["name"] = name;
     map["email"] = email;
     map["password"] = password;
-    map["phone"] = phoneNumber;
+    map["phonenumber"] = phoneNumber;
     map["location"] = location;
+    map["address"] = address;
 
     return map;
   }
@@ -48,7 +57,7 @@ class User {
     map["name"] = name;
     map["email"] = email;
     map["password"] = password;
-    map["phone"] = phoneNumber;
+    map["phonenumber"] = phoneNumber;
     map["location"] = location;
 
     return map;
