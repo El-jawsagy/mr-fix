@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_fix/Network_utils/Pages_Network.dart';
-import 'package:mr_fix/UI/SimilarWidgets.dart';
+import '../../Network_utils/auth_Network.dart';
+import '../UI/SimilarWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Categories.dart';
@@ -21,7 +21,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   TextEditingController confirmPasswordController = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  AuthNetwork pagesNetwork =  AuthNetwork();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -130,7 +130,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       //SharedPreferences prefs = await SharedPreferences.getInstance();
 
       User user = await pagesNetwork.createAndForgetUser(
-          context, 'http://mr-fix.org/en/api/addnewpassword',
+          url: 'https://mr-fix.org/en/api/addnewpassword',
           body: {
             'token':
                 'hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv',

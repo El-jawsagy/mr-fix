@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'Categories.dart';
+import './widgets/Categories.dart';
 import 'Preferences/Perference.dart';
-import 'RegistrationForm/EditProfile.dart';
-import 'RegistrationForm/ForgetPassword.dart';
-import 'RegistrationForm/LoginPage.dart';
-import 'RegistrationForm/ResetPassword.dart';
-import 'RegistrationForm/SignUp.dart';
+import './widgets/RegistrationForm/EditProfile.dart';
+import './widgets/RegistrationForm/ForgetPassword.dart';
+import './widgets/RegistrationForm/LoginPage.dart';
+import './widgets/RegistrationForm/ResetPassword.dart';
+import './widgets/RegistrationForm/SignUp.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp());
 }

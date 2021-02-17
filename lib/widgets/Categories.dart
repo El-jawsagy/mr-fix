@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:mr_fix/UI/loading_screen.dart';
+import '../Network_utils/Service_Network.dart';
+import '../main.dart';
+import '../widgets/UI/loading_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Network_utils/Pages_Network.dart';
-import 'RegistrationForm/LoginPage.dart';
+import '../widgets/RegistrationForm/LoginPage.dart';
 import 'ServicePage.dart';
-import 'UI/SimilarWidgets.dart';
-import 'main.dart';
+import '../widgets/UI/SimilarWidgets.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -15,7 +14,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  ServiceNetwork serviceNetwork = ServiceNetwork();
   SimilarWidgets similarWidgets = new SimilarWidgets();
 
   @override
@@ -37,9 +36,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Center(
                     child: Text(
-                      translate == 'ar' ? 'EN' : 'AR',
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
-                    ))),
+                  translate == 'ar' ? 'EN' : 'AR',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
+                ))),
             IconButton(
                 icon: Icon(Icons.mode_edit),
                 onPressed: () {
@@ -49,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icon(Icons.exit_to_app),
                 onPressed: () async {
                   SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
+                      await SharedPreferences.getInstance();
                   prefs.clear();
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -60,26 +59,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         // drawer: buildDrawer(),
         body: FutureBuilder(
-            future: pagesNetwork.serviceCategories('http://mr-fix.org/' +
+            future: serviceNetwork.serviceCategories('https://mr-fix.org/' +
                 translate +
                 '/api/servicescatogries?token=hVF4CVDlbuUg18MmRZBA4pDkzuXZi9Rzm5wYvSPtxvF8qa8CK9GiJqMXdAMv'),
             builder: (context, snapshots) {
-              switch(snapshots.connectionState ){
-
+              switch (snapshots.connectionState) {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
-                return LoadingScreen();
+                  return LoadingScreen();
                   break;
                 case ConnectionState.active:
                 case ConnectionState.done:
-                 if(snapshots.hasData){
-                   return buildBody(snapshots.data);
-                 }else
-                   return similarWidgets.emptyPage(context);
+                  if (snapshots.hasData) {
+                    return buildBody(snapshots.data);
+                  } else
+                    return similarWidgets.emptyPage(context);
                   break;
                 default:
                   return similarWidgets.emptyPage(context);
-
               }
             }));
   }
@@ -97,9 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   new MaterialPageRoute(
                       builder: (context) =>
-                      new ServicePage(snap[i]['id'], snap[i]['image'])));
-
-              print(snap[i]['slug']);
+                          new ServicePage(snap[i]['id'], snap[i]['image'])));
             },
             child: Container(
                 height: MediaQuery.of(context).size.height,
@@ -111,13 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         Expanded(
                           flex: 3,
                           child:
-                          snap[i]['image'] == null || snap[i]['image'] == ""
-                              ? Image.asset(
-                            'img/logo.png',
-                          )
-                              : Image.network(
-                            "http://mr-fix.org" + snap[i]['image'],
-                          ),
+                              snap[i]['image'] == null || snap[i]['image'] == ""
+                                  ? Image.asset(
+                                      'img/logo.png',
+                                    )
+                                  : Image.network(
+                                      "https://mr-fix.org" + snap[i]['image'],
+                                    ),
                         ),
                         Expanded(flex: 1, child: buildTitle(snap[i]['title']))
                       ],
@@ -132,6 +127,4 @@ class _MyHomePageState extends State<MyHomePage> {
       style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
     );
   }
-
-
 }

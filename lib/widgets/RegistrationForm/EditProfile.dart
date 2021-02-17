@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mr_fix/Network_utils/Pages_Network.dart';
-import 'package:mr_fix/UI/SimilarWidgets.dart';
+import '../../Network_utils/auth_Network.dart';
+import '../UI/SimilarWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'User.dart';
@@ -21,7 +21,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController locationController = new TextEditingController();
   SimilarWidgets similarWidgets = new SimilarWidgets();
 
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  AuthNetwork authNetwork = AuthNetwork();
 
   final _EditKey = GlobalKey<FormState>();
   int id;
@@ -82,12 +82,10 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _onLookupAddressPressed() async {
     final List<String> coords = _currentPosition.toString().split(',');
-    print(coords);
 
     final double latitude = double.parse(coords[0].substring(5));
     final double longitude = double.parse(coords[1].substring(6));
-    print(latitude);
-    print(longitude);
+    
     //print(longitude.toString());
     final List<Placemark> placemarks =
         await _geolocator.placemarkFromCoordinates(latitude, longitude);
@@ -100,7 +98,6 @@ class _EditProfileState extends State<EditProfile> {
     }
     check = true;
 
-    print(_placemark);
   }
 
 //////////////////////////////////////////
@@ -209,8 +206,8 @@ class _EditProfileState extends State<EditProfile> {
           password:
               passwordController.text == "" ? pass : passwordController.text);
 
-      User user = await pagesNetwork.updateUser(
-          'http://mr-fix.org/en/api/updateprofile',
+      User user = await authNetwork.updateUser(
+          'https://mr-fix.org/en/api/updateprofile',
           body: newUser.toUpdate());
 
       if (user != null) {

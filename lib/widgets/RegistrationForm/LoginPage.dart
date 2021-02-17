@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_fix/Network_utils/Pages_Network.dart';
-import 'package:mr_fix/UI/SimilarWidgets.dart';
+import '../../Network_utils/auth_Network.dart';
+import '../UI/SimilarWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Categories.dart';
@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   SimilarWidgets similarWidgets = new SimilarWidgets();
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  AuthNetwork pagesNetwork = AuthNetwork();
   bool passwordVisibility = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -186,29 +186,31 @@ class _LoginPageState extends State<LoginPage> {
           email: emailController.text,
           password: passwordController.text);
 
-      User user = await pagesNetwork.userLogin(
-          context, 'http://mr-fix.org/en/api/login',
-          body: newUser.toLogin());
-      print(user);
-      if (user != null) {
-        Navigator.pushAndRemoveUntil(
+      await pagesNetwork
+          .userLogin(
+              url: 'https://mr-fix.org/en/api/login', body: newUser.toLogin())
+          .then((user) async {
+        print("her is $user");
+        if (user != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setInt("idPref", user.userID);
+          await prefs.setString("namePref", user.name);
+          await prefs.setString("emailPref", user.email);
+          await prefs.setString("phonePref", user.phoneNumber);
+          await prefs.setString("passwordPref", passwordController.text);
+          await prefs.setString("tokenPref", user.token);
+          await prefs.setString("locationPref", user.location);
+          _formKey.currentState.reset();
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MyHomePage()),
-            ModalRoute.withName('/LoginPage'));
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setInt("idPref", user.userID);
-        await prefs.setString("namePref", user.name);
-        await prefs.setString("emailPref", user.email);
-        await prefs.setString("phonePref", user.phoneNumber);
-        await prefs.setString("passwordPref", passwordController.text);
-        await prefs.setString("tokenPref", user.token);
-        await prefs.setString("locationPref", user.location);
-        _formKey.currentState.reset();
-      } else {
-        Navigator.pop(context);
-        similarWidgets.showDialogWidget(
-            "make sure of email or password", context);
-      }
+          );
+        } else {
+          Navigator.pop(context);
+          similarWidgets.showDialogWidget(
+              "make sure of email or password", context);
+        }
+      });
     }
   }
 }

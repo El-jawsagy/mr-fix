@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import '../Network_utils/order_Network.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-import 'Network_utils/Pages_Network.dart';
 import 'UI/SimilarWidgets.dart';
-import 'main.dart';
+import '../main.dart';
 
 class MakeReview extends StatefulWidget {
-  String title, description, image;
+ final String title, description, image;
   int serviceId;
 
   MakeReview({
@@ -25,7 +24,7 @@ class MakeReview extends StatefulWidget {
 class _MakeReviewState extends State<MakeReview> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController descriptionController = new TextEditingController();
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  OrderAndReviewNetwork pagesNetwork =  OrderAndReviewNetwork();
   SimilarWidgets similarWidgets = new SimilarWidgets();
   bool isChecked;
   double rating;
@@ -64,20 +63,26 @@ class _MakeReviewState extends State<MakeReview> {
                               Icons.build,
                               size: 37,
                             )
-                          : Image.network("http://mr-fix.org" + widget.image),
+                          : Image.network("https://mr-fix.org" + widget.image),
                     ),
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height / 80),
-                Text(
-                  translate == 'en' ? "Your Review" : "تقييمك"
-                  /*AppLocalizations.of(context).translate("Description")*/,
-                  style: TextStyle(
-                      //fontFamily: 'Montserrat',
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w600),
+                SizedBox(height: MediaQuery.of(context).size.height / 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      translate == 'en' ? "Your Review" : "تقييمك"
+                      /*AppLocalizations.of(context).translate("Description")*/,
+                      style: TextStyle(
+                          //fontFamily: 'Montserrat',
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.w600),
+
+                    ),
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height / 80),
+                SizedBox(height: MediaQuery.of(context).size.height / 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -90,13 +95,13 @@ class _MakeReviewState extends State<MakeReview> {
                         },
                         starCount: 5,
                         rating: rating,
-                        size: 40.0,
+                        size: 45.0,
                         color: Colors.yellow,
                         borderColor: Colors.yellow,
                         spacing: 0.0)
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height / 25),
+                SizedBox(height: MediaQuery.of(context).size.height / 15),
                 rating > 0
                     ? Center(
                         child: FlatButton(
@@ -147,7 +152,7 @@ class _MakeReviewState extends State<MakeReview> {
 
     int id = prefs.get("idPref");
     String result = await pagesNetwork.MakeReview(
-        'http://mr-fix.org/ar/api/postreview', id, widget.serviceId, rating);
+        'https://mr-fix.org/ar/api/postreview', id, widget.serviceId, rating);
     if (result == 'true') {
       Navigator.pop(context);
       similarWidgets.showDialogWidget(

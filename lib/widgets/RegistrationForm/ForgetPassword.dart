@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_fix/Network_utils/Pages_Network.dart';
-import 'package:mr_fix/UI/SimilarWidgets.dart';
+import '../../Network_utils/auth_Network.dart';
+import '../UI/SimilarWidgets.dart';
 
 import 'ResetPassword.dart';
 import 'User.dart';
@@ -14,7 +14,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   SimilarWidgets similarWidgets = new SimilarWidgets();
   TextEditingController emailController = new TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  PagesNetwork pagesNetwork = new PagesNetwork();
+  AuthNetwork pagesNetwork = AuthNetwork();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           email: emailController.text);
 
       User user = await pagesNetwork.forgetPassword(
-          context, 'http://mr-fix.org/en/api/forgetpassword',
+          context, 'https://mr-fix.org/en/api/forgetpassword',
           body: newUser.toForget());
       //print(newUser.toMap());
       if (user != null) {
